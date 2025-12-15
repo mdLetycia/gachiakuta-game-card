@@ -1,0 +1,1 @@
+# gachiakuta-game-card
