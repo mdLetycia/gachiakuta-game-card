@@ -10,37 +10,65 @@
         padding: 0%;
         box-sizing: border-box;
      }
+      
+     body{
+      width: 100vw;
+      height: 100vh;
+      background-image: linear-gradient(135deg,#2b0000,#8b0000,#2b0000);
 
+     }
      .game-board{
 
-        width: 80%;
+        width: 700px;
         height: 700px;
+        background-color: aliceblue;
         border: 1px solid #333;
         margin: 0 auto;
         position: relative;
         overflow: hidden;
-     }
-
-     .titulo{
-        width: 50%;
+        border-radius: 50px;
      }
 
      #flex-container {
           display: flex;
           justify-content: center;
-}
+
+     }
+
+     .botao{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 52px;
+      margin-top: 20%;
+     }
+
+     .botao button{
+       width: auto;
+       padding: 20px 40px;
+       font-size: 16px;
+       border-radius: 8px;
+       cursor: pointer;
+     }
     </style>
 </head>
 <body>
     <div class="game-board">
-      <div id="flex-container">
-    <img src="https://i.namu.wiki/i/QhRWzy4RaV3RiAx5ACuOLlRp9WeXa52lCz2DIwskqAxTokmGVeMmOO1tBPhzqzGGjo9CnjcQN9L6w1udI2h7vA.webp" class="titulo">
+       <div id="flex-container">
+    <img src="https://i.namu.wiki/i/QhRWzy4RaV3RiAx5ACuOLlRp9WeXa52lCz2DIwskqAxTokmGVeMmOO1tBPhzqzGGjo9CnjcQN9L6w1udI2h7vA.webp" class="titulo" width="70%">
       </div>
-    <button>Começar</button>
-    <button>criar deck</button>
-    <img src="https://static.wikia.nocookie.net/animeverso/images/6/63/Full_Rudo.png/revision/latest/scale-to-width-down/500?cb=20250627162509&path-prefix=pt-br">
-    <img src="https://static.wikia.nocookie.net/gachiakuta/images/e/e3/Anime_Enjin_Render.png/revision/latest?cb=20250723013545">
-    <img src="https://static.wikia.nocookie.net/gachiakuta/images/c/c3/Full_Zanka.png/revision/latest?cb=20220715162404">
+      <div class="botao">
+    <a href="jogatina.html"><button>Começar</button></a>
+    <a href="deck.html"><button>Montar Deck</button></a>
+      </div>
+    </div>
+    <div class="characters">
+      <img src="https://preview.redd.it/make-this-post-look-like-rudos-searching-history-v0-x9wwzprdntqe1.png?auto=webp&s=88b9d3477b6af887df6423b2150f91d5eb8c2703">
+      <img src="https://i0.wp.com/metagalaxia.com.br/wp-content/uploads/2025/07/Enjin-.webp?resize=470%2C1024">
+      <img src="https://i0.wp.com/metagalaxia.com.br/wp-content/uploads/2025/07/Zanka_Nijiku.webp?resize=475%2C1024">
+      <img src="https://i0.wp.com/metagalaxia.com.br/wp-content/uploads/2025/07/Riyo-Reaper-%E3%83%AA%E3%83%A8%E3%82%A6%E3%83%BB%E3%83%AA%E3%83%BC%E3%83%91%E3%83%BC.webp?resize=474%2C1022">
+      <img src="">
     </div>
 </body>
 </html>
