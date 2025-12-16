@@ -4,8 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        *{
+        margin: 0%;
+        padding: 0%;
+        box-sizing: border-box;
+     }
+      
+     body{
+      width: 100vw;
+      height: 100vh;
+      background-image: linear-gradient(135deg,#2b0000,#8b0000,#2b0000);
+
+     }
+     .game-board{
+
+        width: 700px;
+        height: 700px;
+        background-color: aliceblue;
+        background-image: linear-gradient(#aaaaaa, #232323);
+        border: 1px solid #333;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        border-radius: 50px;
+     }
+
+        #cartas{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }   
+
+        #cartas button{
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+        #cartas img{
+            width: 120px;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+        #cartas img:hover{
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
-    
+    <div class="game-board">
+        <h1>Montar Deck</h1>
+        <div id="cartas"><button onclick="adicionarCarta('Rudo')"><img src="https://i.pinimg.com/736x/4b/3c/6e/4b3c6e7b47d75b0a455cfb23aa07349f.jpg"></button>
+        <button onclick="adicionarCarta('Enjin')"><img src="https://i.pinimg.com/736x/a8/04/8c/a8048c446eb61f0175e2a4c724e64a21.jpg"></button>
+        <button onclick="adicionarCarta('Zanka')"><img src="https://i.pinimg.com/736x/a2/d5/5b/a2d55b60ed0cdab074d3665731a65980.jpg"></button>
+        <button onclick="adicionarCarta('Riyo')"><img src="https://i.pinimg.com/736x/e4/b1/ad/e4b1ad31a1ff7fefea6238ce4b79e814.jpg"></button>
+        </div>
+        <h2>Deck atual:</h2>
+        <ul id="deck"></ul>
+        <button onclick="salvarDeck()">Salvar Deck</button>
+    </div>
+    <script src="deck.js">
+
+    </script>
 </body>
 </html>
