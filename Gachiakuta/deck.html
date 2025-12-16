@@ -68,7 +68,24 @@
         <button onclick="salvarDeck()">Salvar Deck</button>
     </div>
     <script src="deck.js">
+        let deck = [];
 
+        function adicionarCarta(carta) {
+            if (deck.length >=4){
+                alert("Deck cheio! Máximo de 4 cartas.");
+                return;
+            }
+            deck.push(carta);
+            atualizarTela();
+        }
+        function atualizarTela() {
+            const lista= 
+            document.getElementById('deck');
+            lista.innerHTML = "";
+            deck.forEach((carta, index)) => {
+                
+            
+        }
     </script>
 </body>
 </html>
