@@ -2,28 +2,34 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gachiakuta: Trash Power</title>
+
 <style>
 body {
     margin: 0;
     background: #111;
     color: #eee;
     font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
+
 #gameContainer {
     position: relative;
     width: 800px;
     height: 400px;
 }
+
 canvas {
     background: #222;
     border: 4px solid #444;
     image-rendering: pixelated;
 }
+
 .overlay {
     position: absolute;
     inset: 0;
@@ -34,7 +40,238 @@ canvas {
     align-items: center;
     z-index: 10;
 }
+
+h1 {
+    color: #e74c3c;
+    text-shadow: 2px 2px #000;
+}
+
+button {
+    padding: 10px 30px;
+    font-size: 20px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #c0392b;
+}
+
 .stats {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+}
+
+span { color: #00ffcc; }
+</style>
+</head>
+
+<body>
+<div id="gameContainer">
+
+<div class="stats">
+    LIXO: <span id="trashCount">0</span> | FERAS: <span id="score">0</span>
+</div>
+
+<div id="menuScreen" class="overlay">
+    <h1>GACHIAKUTA</h1>
+    <p>Setas/W para mover | Espaço para atacar</p>
+    <button onclick="startGame()">INICIAR BUSCA</button>
+</div>
+
+<div id="deathScreen" class="overlay" style="display:none">
+    <h1 style="color:#555">VOCÊ CAIU...</h1>
+    <button onclick="startGame()">TENTAR NOVAMENTE</button>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 800;
+canvas.height = 400;
+
+// IMAGENS
+const imgRudo = new Image();
+imgRudo.src = "assets/rudo.gif";
+
+const imgTrash = new Image();
+imgTrash.src = "assets/trash.png";
+
+const imgEnemy = new Image();
+imgEnemy.src = "assets/enemy.gif";
+
+// ESTADOS
+let gameState = 'MENU';
+const gravity = 0.8;
+let gameSpeed = 5;
+let rudo, trashItems, enemies, bullets, score;
+
+function initVariables() {
+    rudo = {
+        x: 80, y: 300,
+        width: 48, height: 64,
+        dy: 0, jumpForce: -14,
+        grounded: false,
+        trashStored: 0
+    };
+    trashItems = [];
+    enemies = [];
+    bullets = [];
+    score = 0;
+    updateUI();
+}
+
+function updateUI() {
+    trashCount.innerText = rudo.trashStored;
+    scoreSpan.innerText = score;
+}
+
+function startGame() {
+    initVariables();
+    gameState = 'PLAYING';
+    menuScreen.style.display = 'none';
+    deathScreen.style.display = 'none';
+}
+
+const keys = {};
+addEventListener('keydown', e => keys[e.code] = true);
+addEventListener('keyup', e => keys[e.code] = false);
+
+function spawnObjects() {
+    if (Math.random() < 0.02) {
+        trashItems.push({
+            x: canvas.width + 50,
+            y: 220 + Math.random() * 120,
+            width: 24,
+            height: 24
+        });
+    }
+
+    if (rudo.trashStored > 0 || score > 0) {
+        if (Math.random() < 0.015) {
+            enemies.push({
+                x: canvas.width + 100,
+                y: 335,
+                width: 48,
+                height: 48
+            });
+        }
+    }
+}
+
+function update() {
+    if (gameState !== 'PLAYING') return;
+
+    if (!rudo.grounded) rudo.dy += gravity;
+    rudo.y += rudo.dy;
+
+    if ((keys.ArrowUp || keys.KeyW) && rudo.grounded) {
+        rudo.dy = rudo.jumpForce;
+        rudo.grounded = false;
+    }
+
+    if (rudo.y + rudo.height > 380) {
+        rudo.y = 380 - rudo.height;
+        rudo.dy = 0;
+        rudo.grounded = true;
+    }
+
+    if (keys.Space && rudo.trashStored > 0) {
+        bullets.push({ x: rudo.x + rudo.width, y: rudo.y + 28, width: 30, height: 8 });
+        rudo.trashStored--;
+        updateUI();
+        keys.Space = false;
+    }
+
+    trashItems.forEach((t, i) => {
+        t.x -= gameSpeed;
+        if (rectIntersect(rudo, t)) {
+            rudo.trashStored++;
+            updateUI();
+            trashItems.splice(i, 1);
+        }
+    });
+
+    enemies.forEach((en, i) => {
+        en.x -= gameSpeed + 2;
+        if (rectIntersect(rudo, en)) {
+            gameState = 'GAMEOVER';
+            deathScreen.style.display = 'flex';
+        }
+
+        bullets.forEach((b, bi) => {
+            if (rectIntersect(b, en)) {
+                enemies.splice(i, 1);
+                bullets.splice(bi, 1);
+                score++;
+                updateUI();
+            }
+        });
+    });
+
+    bullets.forEach((b, i) => {
+        b.x += 12;
+        if (b.x > canvas.width) bullets.splice(i, 1);
+    });
+
+    spawnObjects();
+}
+
+function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "#333";
+    ctx.fillRect(0,380,canvas.width,20);
+
+    if (gameState === 'MENU') return;
+
+    // RUDO
+    ctx.drawImage(imgRudo, rudo.x, rudo.y, rudo.width, rudo.height);
+
+    // LIXO
+    trashItems.forEach(t => {
+        ctx.drawImage(imgTrash, t.x, t.y, t.width, t.height);
+    });
+
+    // FERAS
+    enemies.forEach(en => {
+        ctx.drawImage(imgEnemy, en.x, en.y, en.width, en.height);
+    });
+
+    // BALAS
+    bullets.forEach(b => {
+        ctx.fillStyle = "#00ffcc";
+        ctx.fillRect(b.x, b.y, b.width, b.height);
+    });
+}
+
+function rectIntersect(a,b){
+    return !(b.x > a.x + a.width || b.x + b.width < a.x ||
+             b.y > a.y + a.height || b.y + b.height < a.y);
+}
+
+function loop(){
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+const trashCount = document.getElementById("trashCount");
+const scoreSpan = document.getElementById("score");
+
+loop();
+</script>
+</body>
+</html>.stats {
     position: absolute;
     top: 10px;
     left: 10px;
