@@ -81,7 +81,7 @@ span { color: #00ffcc; }
 
 <div id="menuScreen" class="overlay">
     <h1>GACHIAKUTA</h1>
-    <p>Setas/W para mover | Espaço para atacar</p>
+    <p>Setas/W para pular | Espaço para atacar</p>
     <button onclick="startGame()">INICIAR BUSCA</button>
 </div>
 
@@ -113,13 +113,17 @@ imgEnemy.src = "assets/enemy.gif";
 let gameState = 'MENU';
 const gravity = 0.8;
 let gameSpeed = 5;
+
 let rudo, trashItems, enemies, bullets, score;
 
 function initVariables() {
     rudo = {
-        x: 80, y: 300,
-        width: 48, height: 64,
-        dy: 0, jumpForce: -14,
+        x: 80,
+        y: 300,
+        width: 48,
+        height: 64,
+        dy: 0,
+        jumpForce: -14,
         grounded: false,
         trashStored: 0
     };
@@ -131,15 +135,15 @@ function initVariables() {
 }
 
 function updateUI() {
-    trashCount.innerText = rudo.trashStored;
-    scoreSpan.innerText = score;
+    document.getElementById('trashCount').innerText = rudo.trashStored;
+    document.getElementById('score').innerText = score;
 }
 
 function startGame() {
     initVariables();
     gameState = 'PLAYING';
-    menuScreen.style.display = 'none';
-    deathScreen.style.display = 'none';
+    document.getElementById('menuScreen').style.display = 'none';
+    document.getElementById('deathScreen').style.display = 'none';
 }
 
 const keys = {};
@@ -160,7 +164,7 @@ function spawnObjects() {
         if (Math.random() < 0.015) {
             enemies.push({
                 x: canvas.width + 100,
-                y: 335,
+                y: 332,
                 width: 48,
                 height: 48
             });
@@ -186,7 +190,12 @@ function update() {
     }
 
     if (keys.Space && rudo.trashStored > 0) {
-        bullets.push({ x: rudo.x + rudo.width, y: rudo.y + 28, width: 30, height: 8 });
+        bullets.push({
+            x: rudo.x + rudo.width,
+            y: rudo.y + 28,
+            width: 30,
+            height: 8
+        });
         rudo.trashStored--;
         updateUI();
         keys.Space = false;
@@ -205,7 +214,7 @@ function update() {
         en.x -= gameSpeed + 2;
         if (rectIntersect(rudo, en)) {
             gameState = 'GAMEOVER';
-            deathScreen.style.display = 'flex';
+            document.getElementById('deathScreen').style.display = 'flex';
         }
 
         bullets.forEach((b, bi) => {
@@ -234,20 +243,16 @@ function draw() {
 
     if (gameState === 'MENU') return;
 
-    // RUDO
     ctx.drawImage(imgRudo, rudo.x, rudo.y, rudo.width, rudo.height);
 
-    // LIXO
     trashItems.forEach(t => {
         ctx.drawImage(imgTrash, t.x, t.y, t.width, t.height);
     });
 
-    // FERAS
     enemies.forEach(en => {
         ctx.drawImage(imgEnemy, en.x, en.y, en.width, en.height);
     });
 
-    // BALAS
     bullets.forEach(b => {
         ctx.fillStyle = "#00ffcc";
         ctx.fillRect(b.x, b.y, b.width, b.height);
@@ -257,83 +262,6 @@ function draw() {
 function rectIntersect(a,b){
     return !(b.x > a.x + a.width || b.x + b.width < a.x ||
              b.y > a.y + a.height || b.y + b.height < a.y);
-}
-
-function loop(){
-    update();
-    draw();
-    requestAnimationFrame(loop);
-}
-
-const trashCount = document.getElementById("trashCount");
-const scoreSpan = document.getElementById("score");
-
-loop();
-</script>
-</body>
-</html>        if (rectIntersect(rudo, en)) {
-            gameState = "GAMEOVER";
-            document.getElementById("deathScreen").style.display = "flex";
-        }
-
-        bullets.forEach((b, bi) => {
-            if (rectIntersect(b, en)) {
-                enemies.splice(i, 1);
-                bullets.splice(bi, 1);
-                score++;
-                updateUI();
-            }
-        });
-    });
-
-    bullets.forEach((b, i) => {
-        b.x += 12;
-        if (b.x > canvas.width) bullets.splice(i, 1);
-    });
-
-    spawnObjects();
-}
-
-function draw() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    ctx.fillStyle = "#333";
-    ctx.fillRect(0,380,canvas.width,20);
-
-    if (gameState !== "PLAYING") return;
-
-    if (superActive) {
-        ctx.fillStyle = "black";
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(images.super, 250, 50, 300, 300);
-        ctx.fillStyle = "#ff0000";
-        ctx.font = "32px Courier New";
-        ctx.textAlign = "center";
-        ctx.fillText("TRASH OVERDRIVE!", 400, 60);
-        return;
-    }
-
-    ctx.drawImage(images.rudo, rudo.x, rudo.y, rudo.width, rudo.height);
-
-    trashItems.forEach(t => {
-        ctx.drawImage(images.trash, t.x, t.y, t.width, t.height);
-    });
-
-    enemies.forEach(en => {
-        ctx.drawImage(images.enemy, en.x, en.y, en.width, en.height);
-    });
-
-    bullets.forEach(b => {
-        ctx.fillStyle = "#00ffcc";
-        ctx.fillRect(b.x, b.y, b.width, b.height);
-    });
-}
-
-function rectIntersect(a,b){
-    return !(b.x > a.x + a.width ||
-             b.x + b.width < a.x ||
-             b.y > a.y + a.height ||
-             b.y + b.height < a.y);
 }
 
 function loop(){
